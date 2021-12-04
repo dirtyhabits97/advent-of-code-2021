@@ -1,110 +1,59 @@
 from collections import defaultdict
 
-def main(nums, bin_len):
-    # 1. calculate the count of every bit
-    count = [0] * bin_len
 
-    for num in nums:
-        mask = 1 << (len(count) - 1)
+def life_support_rating(nums, number_of_bits):
+    oxy, co2 = [], []
 
-        for idx in range(len(count)):
-            count[idx] += 1 if mask & num else -1
-            mask >>= 1
+    while len(oxy) != 1:
+        oxy = bit_criteria(nums, number_of_bits, True)
 
-    # 2. check if should be 1 (true) or 0 (false)
-    # based on the bit count
-    oxy_bits = [x >= 0 for x in count]
-    co2_bits = [x <= 0 for x in count]
+    while len(co2) != 1:
+        co2 = bit_criteria(nums, number_of_bits, False)
 
-    oxy, co2 = filter_by_col(nums, oxy_bits), filter_by_col(nums, co2_bits)
-
-    return build(oxy, co2)
+    return oxy[0] * co2[0]
 
 
-def filter_by_col(nums, bits_to_match):
+def bit_criteria(nums, cols, find_most_common):
     skip = defaultdict(lambda: False)
-    mask = 1 << (len(bits_to_match) - 1)
+    mask = 1 << (cols - 1)
     last_valid_num = float("inf")
 
-    for bit in bits_to_match:
+    for _ in range(cols):
 
+        # find the most or least common bit
+        number_of_one_bits = 0
         for num in nums:
-            # check if invalid
             if skip[num]:
                 continue
+            number_of_one_bits += 1 if num & mask else -1
 
-            # check the mask
-            if bit and mask & num:
+        # check what the target bit is for this position
+        # if default to one = True, we are calculating oxygen
+        if find_most_common:
+            target = 1 if number_of_one_bits >= 0 else 0
+        # find the least common
+        else:
+            target = 0 if number_of_one_bits >= 0 else 1
+
+        for num in nums:
+            if skip[num]:
+                continue
+            if target and (num & mask):
                 last_valid_num = num
-            elif not bit and not mask & num:
+            elif not target and not (num & mask):
                 last_valid_num = num
             else:
                 skip[num] = True
-                continue  # invalid
 
         mask >>= 1
 
     ans = []
-    for key in skip:
-        if skip[key]:
+    for num in skip:
+        if skip[num]:
             continue
-        ans.append(skip[key])
+        ans.append(num)
 
     return ans if ans else [last_valid_num]
-
-
-def filter(nums, count):
-
-    # 1. oxygen
-    oxygen = []
-    for num in nums:
-
-        skip = False
-        mask = 1 << (len(count) - 1)
-        for c in count:
-            if c >= 0 and mask & num:
-                skip = False
-            elif c < 0 and not mask & num:
-                skip = False
-            else:
-                skip = True
-                break
-            mask >>= 1
-
-        if skip:
-            continue
-
-        print("adding to oxygen", num)
-        oxygen.append(num)
-
-    # 2. co2
-    co2 = []
-    for num in nums:
-
-        skip = False
-        mask = 1 << (len(count) - 1)
-
-        for c in count:
-            if c <= 0 and not mask & num:
-                skip = False
-            elif c > 1 and mask & num:
-                skip = False
-            else:
-                skip = True
-                break
-            mask >>= 1
-
-        if skip:
-            continue
-
-        print("adding to co2", num)
-        co2.append(num)
-
-    return (oxygen, co2)
-
-
-def build(lhs, rhs):
-    return sum(lhs) * sum(rhs)
 
 
 if __name__ == '__main__':
@@ -113,4 +62,4 @@ if __name__ == '__main__':
     for line in f:
         binary = int(line, 2)
         arr.append(binary)
-    print(main(arr, 12))
+    print(life_support_rating(arr, 12))
