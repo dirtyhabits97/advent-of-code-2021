@@ -1,3 +1,19 @@
+def main():
+    f = open("input.txt", "r")
+    nums = parse_nums(f[:1])
+    boards = parse_boards(f[2:])
+
+    return bingo(nums, boards)
+
+
+def parse_nums(input):
+    print(input)
+    return []
+
+
+def parse_boards(input):
+    return []
+
 
 def bingo(nums, boards):
     for num in nums:
@@ -68,3 +84,7 @@ def check_if_won(board):
         return True
 
     return False
+
+
+if __name__ == '__main__':
+    main()
