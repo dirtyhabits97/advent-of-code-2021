@@ -1,7 +1,9 @@
 def main():
     f = open("input.txt", "r")
-    nums = parse_nums(f[:1])
-    boards = parse_boards(f[2:])
+    lines = f.readlines()
+
+    nums = parse_nums(lines[:1])
+    boards = parse_boards(lines[2:])
 
     return bingo(nums, boards)
 
@@ -12,6 +14,8 @@ def parse_nums(input):
 
 
 def parse_boards(input):
+    for line in input:
+        print(line)
     return []
 
 
