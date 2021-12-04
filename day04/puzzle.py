@@ -9,23 +9,35 @@ def main():
 
 
 def parse_nums(input):
-    print(input)
-    return []
+    nums = list(map(int, input[0].split(",")))
+    return nums
 
 
 def parse_boards(input):
+    boards = []
+    buffer = []
     for line in input:
-        print(line)
-    return []
+
+        if line == "\n":
+            boards.append(buffer)
+            buffer = []
+
+        else:
+            row = []
+            for num in line.split():
+                row.append([int(num), False])
+            buffer.append(row)
+
+    return boards
 
 
 def bingo(nums, boards):
     for num in nums:
-
         for board in boards:
             mark(num, board)
 
             if check_if_won(board):
+                print("board won", board, score(board), num)
                 return score(board) * num
 
     return -1
@@ -55,7 +67,7 @@ def mark(num, board):
 
     for row in range(rows):
         for col in range(cols):
-            if num == board[row][col]:
+            if num == board[row][col][0]:
                 board[row][col][1] = True
 
 
@@ -75,20 +87,27 @@ def check_if_won(board):
 
     # 1. check rows
     for row in range(rows):
+        all_true = True
         for col in range(cols):
             if not board[row][col][1]:
+                all_true = False
                 break
-        return True
+
+        if all_true:
+            return True
 
     # 2. check cols
     for col in range(cols):
+        all_true = True
         for row in range(rows):
             if not board[row][col][1]:
+                all_true = False
                 break
-        return True
+        if all_true:
+            return True
 
     return False
 
 
 if __name__ == '__main__':
-    main()
+    print(main())
