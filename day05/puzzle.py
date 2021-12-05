@@ -6,7 +6,9 @@ def main():
 
     board = [[0 for _ in range(cols)] for _ in range(rows)]
 
-    for start, end in data:
+    for row in data:
+        start = row[:2]
+        end = row[2:]
         mark(board, start, end)
 
     return count_overlap(board)
@@ -50,7 +52,7 @@ def number_of_rows(data):
     for row in data:
         ans = max(ans, row[1], row[3])
 
-    return ans
+    return ans + 1
 
 
 def number_of_cols(data):
@@ -68,7 +70,7 @@ def number_of_cols(data):
     for row in data:
         ans = max(ans, row[0], row[2])
 
-    return ans
+    return ans + 1
 
 
 def count_overlap(board):
@@ -79,7 +81,7 @@ def count_overlap(board):
             if board[row][col] > 1:
                 count += 1
 
-    return 0
+    return count
 
 
 def mark(board, start, end):
