@@ -94,14 +94,29 @@ def mark(board, start, end):
         for row in range(lo, hi+1):
             board[row][start[0]] += 1
 
+        return
+
     # If same row, mark every column
-    elif start[1] == end[1]:
+    if start[1] == end[1]:
         lo, hi = start[0], end[0]
         if lo > hi:
             lo, hi = hi, lo
 
         for col in range(lo, hi+1):
             board[start[1]][col] += 1
+
+        return
+
+    # check diagonal
+    if abs(start[0] - end[0]) == abs(start[1] - end[1]):
+
+        col_sign = 1 if end[0] > start[0] else -1
+        row_sign = 1 if end[1] > start[1] else -1
+
+        col = start[0]
+        for row in range(start[1], end[1] + row_sign, row_sign):
+            board[row][col] += 1
+            col += col_sign
 
 
 if __name__ == '__main__':
