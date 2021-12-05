@@ -21,7 +21,18 @@ def parse(raw_data):
         ...
     ]
     """
-    return []
+    ans = []
+
+    for line in raw_data:
+        start, end = line.split("->")
+        start_col, start_row = start.split(",")
+        end_col, end_row = end.split(",")
+
+        ans.append([
+            int(start_col), int(start_row), int(end_col), int(end_row)
+        ])
+
+    return ans
 
 
 def number_of_rows(data):
@@ -90,3 +101,7 @@ def mark(board, start, end):
 
         for col in range(lo, hi+1):
             board[start[1]][col] += 1
+
+
+if __name__ == '__main__':
+    print(main())
