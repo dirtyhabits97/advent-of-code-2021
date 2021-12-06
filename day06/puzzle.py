@@ -16,7 +16,7 @@ def bfs(nums, days):
 def main():
     f = open("input.txt", "r")
     input = list(map(int, f.readlines()[0].split(",")))
-    print(bfs(input, 80))
+    print(bfs(input, 256))
 
 
 if __name__ == '__main__':
