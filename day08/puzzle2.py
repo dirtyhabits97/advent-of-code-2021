@@ -30,7 +30,8 @@ def sum_outputs(data):
     7 -> 3 chars to represent
     8 -> 7 chars to represent
     """
-    for signals, _ in data:
+    ans = 0
+    for signals, outputs in data:
         print("==============================")
         zero = set()
         one = set()
@@ -126,24 +127,21 @@ def sum_outputs(data):
         print("0: ", zero)
         print("9: ", nine)
 
-    nums = [zero, one, two, three, four, five, six, seven, eight, nine]
-    for idx in range(len(nums)):
-        print(idx, nums[idx])
-
-    ans = 0
-    for _, outputs in data:
+        nums = [zero, one, two, three, four, five, six, seven, eight, nine]
+        for idx in range(len(nums)):
+            print(idx, nums[idx])
 
         num_to_add = 0
         for output in outputs:
             o = set(output)
-
             for idx in range(len(nums)):
                 num = nums[idx]
                 if num == o:
                     num_to_add *= 10
                     num_to_add += idx
-                    break
         ans += num_to_add
+        print(num_to_add)
+
     return ans
 
 
