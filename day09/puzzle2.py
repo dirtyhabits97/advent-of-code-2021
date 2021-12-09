@@ -1,5 +1,6 @@
 from math import prod
 
+
 def main():
     f = open("input.txt", "r")
     # f = open("demo.txt", "r")
