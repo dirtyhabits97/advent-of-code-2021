@@ -8,7 +8,7 @@ def main():
     while True:
         flash(data)
         if correct(data):
-            log(data, "after")
+            log(data, step)
             return step
 
         step += 1
