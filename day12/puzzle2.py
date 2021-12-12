@@ -8,49 +8,20 @@ def main():
 
 
 def count_paths(data):
-    return visit(data, 'start', set(), ['start'], False, False)
+    return visit(data, 'start', set(), True)
 
 
-def visit(graph, node, visited, stack, ignoreCurrentNode, alreadyIgnored):
+def visit(graph, node, visited, bonusVisit):
     if node == 'end':
-        # This is not an optimal solution
-        # should cache the visited edges in a matrix for faster lookup
-        hashed = tuple(stack)
-        if hashed in visited:
-            return 0
-        else:
-            visited.add(hashed)
-            print(stack)
-            return 1
-
-    if not ignoreCurrentNode:
-        visited.add(node)
-
-    ans = 0
-    for neighbor in graph[node]:
-        if neighbor in visited:
-            continue
-
-        # check if is a big cave
-        if neighbor.isupper():
-            ans += visit(graph, neighbor, visited, stack + [neighbor], True, alreadyIgnored)
-            continue
-
-        # handle small cave
-        # 1. if we already visited a small cave twice, visit the rest only once
-        if alreadyIgnored:
-            ans += visit(graph, neighbor, visited, stack + [neighbor], False, True)
-            continue
-        # 2. if we havent visited a small case twice:
-        # a. visit all the caves once
-        ans += visit(graph, neighbor, visited, stack + [neighbor], False, False)
-        # b. visit the current neighbor twice
-        ans += visit(graph, neighbor, visited, stack + [neighbor], True, True)
+        return 1
 
     if node in visited:
-        visited.remove(node)
+        if not bonusVisit or node == 'start':
+            return 0
+        bonusVisit = False
 
-    return ans
+    v = visited if node[0].isupper() else visited | set([node])
+    return sum(visit(graph, next, v, bonusVisit) for next in graph[node])
 
 
 def parse(input):
@@ -58,9 +29,7 @@ def parse(input):
     for line in input:
         lhs, rhs = line.split("-")
         data[lhs].append(rhs.strip())
-        # exclude 'start' as a viable neighbor
-        if lhs != 'start':
-            data[rhs.strip()].append(lhs)
+        data[rhs.strip()].append(lhs)
     return data
 
 
