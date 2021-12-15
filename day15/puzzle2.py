@@ -1,3 +1,6 @@
+from queue import PriorityQueue
+
+
 def main():
     f = open("input.txt", "r")
     data = parse(f)
@@ -24,28 +27,33 @@ def expand(data):
             data[-1].append(new)
         row += 1
 
-    for row in data:
-        print(row)
-
     return data
 
 
 def calculate_risk(data):
-
+    # Use Dijkstra
     rows, cols = len(data), len(data[0])
-    risk = [[
-        float("inf") if not row or not col else 0 for col in range(cols + 1)
-    ] for row in range(rows + 1)]
+    risk = [[float("inf") for _ in range(cols)] for _ in range(rows)]
+    # priority queue
+    q = PriorityQueue()
+    q.put((0, 0, 0))
 
-    data[0][0] = 0
-    risk[0][1] = 0
-
-    for row in range(rows):
-        for col in range(cols):
-            risk[row + 1][col + 1] = min(
-                risk[row + 1][col],
-                risk[row][col + 1]
-            ) + data[row][col]
+    while not q.empty():
+        weight, row, col = q.get()
+        # if we've calculated a cheaper path, skip computation
+        if weight > risk[row][col]:
+            continue
+        for dx, dy in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+            x, y = row+dx, col+dy
+            # check within bounds
+            if x < 0 or x >= rows or y < 0 or y >= cols:
+                continue
+            # calculate new weight for path / edge
+            new_weight = weight + data[x][y]
+            # check if we haven't seen a cheaper path
+            if new_weight < risk[x][y]:
+                risk[x][y] = new_weight
+                q.put((new_weight, x, y))
 
     return risk[-1][-1]
 
